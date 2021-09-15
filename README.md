@@ -1,5 +1,4 @@
-<h1 align="center">Desafio PublicSoft</h1>
-<h3 align="center">Sistema de gestão de contratos</h3>
+<h2 align="center">Sistema de gestão de contratos - API</h2>
 
 ### Features
 - [x] Autenticação JWT
@@ -25,22 +24,25 @@ As seguintes ferramentas foram usadas na construção do projeto:
 ### Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
-[Git](https://git-scm.com), [Node.js](https://nodejs.org/en/). [Docker](https://www.docker.com/)
+[Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) [Yarn](https://yarnpkg.com/) [Docker](https://www.docker.com/)
 
 ### 🎲 Rodando o BackEnd (servidor)
 
 ```bash
 # Clone este repositório
-$ git clone <https://github.com/carlosajr/desafioPublicSoft.git>
+$ git clone <https://github.com/carlosajr/gestao-contratos-api.git>
 
 # Acesse a pasta do projeto no terminal/cmd
-$ cd desafioPublicSoft
-
-# Vá para a pasta server
-$ cd backend
+$ cd gestao-contratos-api
 
 # Instale as dependências
 $ yarn
+
+# Configuração das variaves de ambiente copiando de .env.example
+$ cp .env.example .env
+
+# Configuração dos dados do banco de dados
+É necessario preencher as informações de: host, usuario, senha e nome do banco em ormconfig.json
 
 # Execute a aplicação em modo de desenvolvimento
 $ yarn dev 
