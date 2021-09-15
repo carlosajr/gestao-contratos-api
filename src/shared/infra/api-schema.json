@@ -1,0 +1,1303 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Desafio PublicSoft",
+    "description": "Sistema de Gestão de contratos - Api desenvolvida em NODE utilizado os principiso SOLID e DDD",
+    "license": {
+      "name": "License MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "paths": {
+    "/cep/{CEP}": {
+      "get": {
+        "tags": [
+          "CEP"
+        ],
+        "summary": "Retorna o Endereço consultado no ViaCEP",
+        "description": "Pegar o Endereco pelo CEP",
+        "operationId": "getEndereco",
+        "parameters": [
+          {
+            "name": "CEP",
+            "in": "path",
+            "description": "Numero do CEP",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Endereco",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CepGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/usuarios": {
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "description": "Criar um Novo usuario",
+        "operationId": "createUser",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Usuario"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario cadastrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCreatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramentros Invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Endereço de email já utilizado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "post": {
+        "tags": [
+          "Autorização"
+        ],
+        "description": "Autenticar o usuario e gerar o JWT",
+        "operationId": "authenticateUser",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserAuth"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario Autenticado e JWT retornado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticatedUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "status": "erro",
+                  "message": "email ou senha invalidos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cidades": {
+      "get": {
+        "tags": [
+          "Cidades"
+        ],
+        "description": "Pegar a lista de Cidades",
+        "operationId": "getCidades",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Listade Cidades",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CidadesGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/estados": {
+      "get": {
+        "tags": [
+          "Estados"
+        ],
+        "description": "Pegar a lista de estados",
+        "operationId": "getEstados",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Listade Estados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadoGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/estados/{codigo_estado}/cidades": {
+      "get": {
+        "tags": [
+          "Estados"
+        ],
+        "description": "Pegar a lista de cidades por estado",
+        "operationId": "getCidadesEstado",
+        "parameters": [
+          {
+            "name": "codigo_estado",
+            "in": "path",
+            "description": "Codigo do Estado",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de Cidades Por Estado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CidadesGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/prestadores/": {
+      "get": {
+        "tags": [
+          "Prestadores"
+        ],
+        "description": "Retorna os dados dos prestadores",
+        "operationId": "getPrestador",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Retorna os dados dos Prestador",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrestadoresGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Prestadores"
+        ],
+        "description": "Atualiza os dados de um prestador",
+        "operationId": "postPrestador",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrestadorGetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Cria o prestador e retorna os dados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrestadorGetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramentros Invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Já existe um prestador com email informado"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/prestadores/{prestador_id}": {
+      "get": {
+        "tags": [
+          "Prestadores"
+        ],
+        "description": "Retorna os dados de um prestador",
+        "operationId": "getOnePrestador",
+        "parameters": [
+          {
+            "name": "prestador_id",
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna os dados do Prestador",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrestadorGetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramentros Invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Prestador não encontrado"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Prestadores"
+        ],
+        "description": "Atualiza os dados de um prestador",
+        "operationId": "putPrestador",
+        "parameters": [
+          {
+            "name": "prestador_id",
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrestadorGetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Retorna os dados do Prestador",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrestadorGetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramentros Invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Prestador não encontrado"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Prestadores"
+        ],
+        "description": "Deleta os dados de um prestador",
+        "operationId": "deletePrestador",
+        "parameters": [
+          {
+            "name": "prestador_id",
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Da SoftDelete e Retorna os dados do Prestador",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrestadorGetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramentros Invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Prestador não encontrado"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/contratos/": {
+      "get": {
+        "tags": [
+          "Contratos"
+        ],
+        "description": "Retorna os dados dos contratos",
+        "operationId": "getContratos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Retorna os dados dos contratos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratoGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Contratos"
+        ],
+        "description": "Cria um contrato vinculando a um prestador",
+        "operationId": "postContrato",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContratoGetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Cria o contrato e retorna os dados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratoGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/contratos/{contrato_id}": {
+      "get": {
+        "tags": [
+          "Contratos"
+        ],
+        "description": "Retorna os dados de um contratos",
+        "operationId": "getPrestador",
+        "parameters": [
+          {
+            "name": "contrato_id",
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna os dados do Contrato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratoGetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramentros Invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Contrato não encontrado"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Contratos"
+        ],
+        "description": "Atualiza os dados de um contrato",
+        "operationId": "putPrestador",
+        "parameters": [
+          {
+            "name": "contrato_id",
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContratoGetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Retorna os dados do Contrato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratoGetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramentros Invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Contrato não encontrado"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Contratos"
+        ],
+        "description": "Deleta os dados de um contrato",
+        "operationId": "deletePrestador",
+        "parameters": [
+          {
+            "name": "contrato_id",
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Da SoftDelete e Retorna os dados do Contrato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratoGetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramentros Invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Contrato não encontrado"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/contratos/{contrato_id}/prazo/restante/": {
+      "get": {
+        "tags": [
+          "Contratos"
+        ],
+        "description": "Retorna a quantiade de dias restantes de um contrato ",
+        "operationId": "getContratosPrazoRestante",
+        "parameters": [
+          {
+            "name": "contrato_id",
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna os dados do Contrato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratosPrazoRestanteGetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramentros Invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Contrato não encontrado"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/contratos/prazo/{prazo}": {
+      "get": {
+        "tags": [
+          "Contratos"
+        ],
+        "description": "Retorna os dados dos contratos dentro de um prazo",
+        "operationId": "getContratosPrazo",
+        "parameters": [
+          {
+            "name": "prazo",
+            "in": "path",
+            "type": "number",
+            "example": 15,
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna os dados dos contratos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratosGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/contratos/prazo/{prazo}/count": {
+      "get": {
+        "tags": [
+          "Contratos"
+        ],
+        "description": "Retorna a quantidade de contratos dentro de um prazo",
+        "operationId": "getContratosPrazoCount",
+        "parameters": [
+          {
+            "name": "prazo",
+            "in": "path",
+            "type": "number",
+            "example": 15,
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna os dados dos contratos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratosCountGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "description": "Autorização utilizando Bearer Token no Header, utilize o endpoint de autorização para conseguir um Token",
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    },
+    "schemas": {
+      "jwtToken": {
+        "type": "string",
+        "example": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjE5OTg4NjgsImV4cCI6MTcwODMxMjQ2OCwic3ViIjoiYTQzODdhYzctZDFkZS00Y2YzLWE2OTAtY2YwMDk4NDFkYzNiIn0.LZPudCNp6QluDiTHkOZiJKN3uwI5B5f6vQgc0rzTpkY"
+      },
+      "id": {
+        "type": "string",
+        "example": "bcbcb486-2726-4d42-82de-05ab1138bf1f"
+      },
+      "estado": {
+        "type": "string",
+        "example": "448b3e42-d03f-42c2-9ec4-b68e7023a50b"
+      },
+      "cidade": {
+        "type": "string",
+        "example": "443878cc-4309-47c4-825e-496ed3816931"
+      },
+      "nome": {
+        "type": "string",
+        "example": "John Doe"
+      },
+      "cpf_cnpj": {
+        "type": "string",
+        "example": "11341746402"
+      },
+      "email": {
+        "type": "string",
+        "example": "john@mail.com"
+      },
+      "senha": {
+        "type": "string",
+        "example": "12345678"
+      },
+      "cep": {
+        "type": "string",
+        "example": "58064370"
+      },
+      "numero": {
+        "type": "number",
+        "example": 50
+      },
+      "logradouro": {
+        "type": "string",
+        "example": "Rua Lauro Bezerra Cavalcante"
+      },
+      "complemento": {
+        "type": "string",
+        "example": ""
+      },
+      "bairro": {
+        "type": "string",
+        "example": "Torre"
+      },
+      "localidade": {
+        "type": "string",
+        "example": "João Pessoa"
+      },
+      "uf": {
+        "type": "string",
+        "example": "PB"
+      },
+      "codigo_estado": {
+        "type": "number",
+        "example": 100117
+      },
+      "codigo": {
+        "type": "number",
+        "example": 100117004
+      },
+      "servico_prestado": {
+        "type": "string",
+        "example": "Desenvolvimento de Sistema de gestão de contratos"
+      },
+      "data": {
+        "type": "string",
+        "example": "2021-05-25T21:42:38.554Z"
+      },
+      "created_at": {
+        "type": "string",
+        "example": "2021-05-25T21:42:38.554Z"
+      },
+      "updated_at": {
+        "type": "string",
+        "example": "2021-05-25T21:42:38.554Z"
+      },
+      "Usuario": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "$ref": "#/components/schemas/nome"
+          },
+          "email": {
+            "$ref": "#/components/schemas/email"
+          },
+          "senha": {
+            "$ref": "#/components/schemas/senha"
+          }
+        }
+      },
+      "UserAuth": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "$ref": "#/components/schemas/email"
+          },
+          "senha": {
+            "$ref": "#/components/schemas/senha"
+          }
+        }
+      },
+      "UserCreatedResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "nome": {
+                "$ref": "#/components/schemas/nome"
+              },
+              "email": {
+                "$ref": "#/components/schemas/email"
+              },
+              "id": {
+                "$ref": "#/components/schemas/id"
+              },
+              "created_at": {
+                "$ref": "#/components/schemas/created_at"
+              },
+              "updated_at": {
+                "$ref": "#/components/schemas/updated_at"
+              }
+            }
+          }
+        }
+      },
+      "AuthenticatedUserResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "nome": {
+                "$ref": "#/components/schemas/nome"
+              },
+              "email": {
+                "$ref": "#/components/schemas/email"
+              },
+              "id": {
+                "$ref": "#/components/schemas/id"
+              },
+              "created_at": {
+                "$ref": "#/components/schemas/created_at"
+              },
+              "updated_at": {
+                "$ref": "#/components/schemas/updated_at"
+              }
+            }
+          },
+          "token": {
+            "$ref": "#/components/schemas/jwtToken"
+          }
+        }
+      },
+      "CidadesGetResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/components/schemas/id"
+            },
+            "codigo_estado": {
+              "$ref": "#/components/schemas/codigo_estado"
+            },
+            "codigo": {
+              "$ref": "#/components/schemas/codigo"
+            },
+            "nome": {
+              "$ref": "#/components/schemas/nome"
+            }
+          }
+        }
+      },
+      "CepGetResponse": {
+        "type": "object",
+        "properties": {
+          "cep": {
+            "$ref": "#/components/schemas/cep"
+          },
+          "logradouro": {
+            "$ref": "#/components/schemas/logradouro"
+          },
+          "complemento": {
+            "$ref": "#/components/schemas/complemento"
+          },
+          "bairro": {
+            "$ref": "#/components/schemas/bairro"
+          },
+          "localidade": {
+            "$ref": "#/components/schemas/localidade"
+          },
+          "uf": {
+            "$ref": "#/components/schemas/uf"
+          }
+        }
+      },
+      "EstadoGetResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/components/schemas/id"
+            },
+            "codigo": {
+              "$ref": "#/components/schemas/codigo"
+            },
+            "nome": {
+              "$ref": "#/components/schemas/nome"
+            }
+          }
+        }
+      },
+      "PrestadorGetRequest": {
+        "type": "object",
+        "properties": {
+          "tipo_pessoa": {
+            "type": "string",
+            "example": "PF"
+          },
+          "cpf_cnpj": {
+            "$ref": "#/components/schemas/cpf_cnpj"
+          },
+          "nome": {
+            "$ref": "#/components/schemas/nome"
+          },
+          "email": {
+            "$ref": "#/components/schemas/email"
+          },
+          "cep": {
+            "$ref": "#/components/schemas/cep"
+          },
+          "endereco": {
+            "$ref": "#/components/schemas/logradouro"
+          },
+          "numero": {
+            "$ref": "#/components/schemas/numero"
+          },
+          "complemento": {
+            "$ref": "#/components/schemas/complemento"
+          },
+          "bairro": {
+            "$ref": "#/components/schemas/bairro"
+          },
+          "cidade": {
+            "$ref": "#/components/schemas/cidade"
+          },
+          "estado": {
+            "$ref": "#/components/schemas/estado"
+          }
+        }
+      },
+      "PrestadorGetResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/id"
+          },
+          "tipo_pessoa": {
+            "type": "string",
+            "example": "PF"
+          },
+          "cpf_cnpj": {
+            "$ref": "#/components/schemas/cpf_cnpj"
+          },
+          "nome": {
+            "$ref": "#/components/schemas/nome"
+          },
+          "email": {
+            "$ref": "#/components/schemas/email"
+          },
+          "cep": {
+            "$ref": "#/components/schemas/cep"
+          },
+          "endereco": {
+            "$ref": "#/components/schemas/logradouro"
+          },
+          "numero": {
+            "$ref": "#/components/schemas/numero"
+          },
+          "complemento": {
+            "$ref": "#/components/schemas/complemento"
+          },
+          "bairro": {
+            "$ref": "#/components/schemas/bairro"
+          },
+          "cidade": {
+            "$ref": "#/components/schemas/id"
+          },
+          "estado": {
+            "$ref": "#/components/schemas/id"
+          },
+          "ativo": {
+            "type": "boolean",
+            "example": false
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/created_at"
+          },
+          "updated_at": {
+            "$ref": "#/components/schemas/updated_at"
+          }
+        }
+      },
+      "PrestadoresGetResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/components/schemas/id"
+            },
+            "tipo_pessoa": {
+              "type": "string",
+              "example": "PF"
+            },
+            "cpf_cnpj": {
+              "$ref": "#/components/schemas/cpf_cnpj"
+            },
+            "nome": {
+              "$ref": "#/components/schemas/nome"
+            },
+            "email": {
+              "$ref": "#/components/schemas/email"
+            },
+            "cep": {
+              "$ref": "#/components/schemas/cep"
+            },
+            "endereco": {
+              "$ref": "#/components/schemas/logradouro"
+            },
+            "numero": {
+              "$ref": "#/components/schemas/numero"
+            },
+            "complemento": {
+              "$ref": "#/components/schemas/complemento"
+            },
+            "bairro": {
+              "$ref": "#/components/schemas/bairro"
+            },
+            "cidade": {
+              "$ref": "#/components/schemas/id"
+            },
+            "estado": {
+              "$ref": "#/components/schemas/id"
+            },
+            "ativo": {
+              "type": "boolean",
+              "example": false
+            },
+            "created_at": {
+              "$ref": "#/components/schemas/created_at"
+            },
+            "updated_at": {
+              "$ref": "#/components/schemas/updated_at"
+            }
+          }
+        }
+      },
+      "ContratoGetRequest": {
+        "type": "object",
+        "properties": {
+          "prestador_id": {
+            "$ref": "#/components/schemas/id"
+          },
+          "servico_prestado": {
+            "$ref": "#/components/schemas/servico_prestado"
+          },
+          "data_inicio": {
+            "$ref": "#/components/schemas/data"
+          },
+          "data_fim": {
+            "$ref": "#/components/schemas/data"
+          }
+        }
+      },
+      "ContratoGetResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/id"
+          },
+          "prestador_id": {
+            "$ref": "#/components/schemas/id"
+          },
+          "servico_prestado": {
+            "$ref": "#/components/schemas/servico_prestado"
+          },
+          "data_inicio": {
+            "$ref": "#/components/schemas/data"
+          },
+          "data_fim": {
+            "$ref": "#/components/schemas/data"
+          },
+          "ativo": {
+            "type": "boolean",
+            "example": false
+          },
+          "prestador": {
+            "$ref": "#/components/schemas/PrestadorGetResponse"
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/created_at"
+          },
+          "updated_at": {
+            "$ref": "#/components/schemas/updated_at"
+          }
+        }
+      },
+      "ContratosGetResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/components/schemas/id"
+            },
+            "prestador_id": {
+              "$ref": "#/components/schemas/id"
+            },
+            "servico_prestado": {
+              "$ref": "#/components/schemas/servico_prestado"
+            },
+            "data_inicio": {
+              "$ref": "#/components/schemas/data"
+            },
+            "data_fim": {
+              "$ref": "#/components/schemas/data"
+            },
+            "ativo": {
+              "type": "boolean",
+              "example": false
+            },
+            "prestador": {
+              "$ref": "#/components/schemas/PrestadorGetResponse"
+            },
+            "created_at": {
+              "$ref": "#/components/schemas/created_at"
+            },
+            "updated_at": {
+              "$ref": "#/components/schemas/updated_at"
+            }
+          }
+        }
+      },
+      "ContratosCountGetResponse": {
+        "type": "object",
+        "properties": {
+          "quantidade_contratos": {
+            "$ref": "#/components/schemas/numero"
+          }
+        }
+      },
+      "ContratosPrazoRestanteGetResponse": {
+        "type": "object",
+        "properties": {
+          "dias_restantes": {
+            "$ref": "#/components/schemas/numero"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "bearerAuth",
+      "in": "header"
+    }
+  }
+}
